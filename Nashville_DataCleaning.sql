@@ -73,42 +73,19 @@ WHERE a."PropertyAddress" IS NULL;
 -- Now we have all the cases where the a property address in a given line is missing but the same ParcelID has already
 -- appeared with the property address.
 
--- So, to populate the missing values of the property addres I will use the COALESCE function, that substitutes a missing value
+-- So, to populate the missing values of the property addres I will use a subquery, that substitutes the missing values
+-- with values returned by the inside query
 
-SELECT a."ParcelID", COALESCE(a."PropertyAddress", b."PropertyAddress"), b."ParcelID", b."PropertyAddress"
-FROM "NashvilleDataCleaning".housing AS a
-JOIN "NashvilleDataCleaning".housing AS b
-    ON a."ParcelID" = b."ParcelID" AND a."UniqueID" != b."UniqueID" -- The lines must be different!
-WHERE a."PropertyAddress" IS NULL;
--- There it is. Now we just have to update it into the table.
 
---\\----------------------\\----------------------\\----------------------\\----------------------
---testing
-
-SELECT
-        t1."ParcelID",
-    (
+UPDATE "NashvilleDataCleaning".housing AS a
+    SET "PropertyAddress" = (
         SELECT "PropertyAddress"
-        FROM "NashvilleDataCleaning".housing AS t2
-        WHERE t1."ParcelID" = t2."ParcelID"
-          AND "PropertyAddress" IS NOT NULL
+        FROM "NashvilleDataCleaning".housing AS b
+        WHERE a."ParcelID" = b."ParcelID" AND "PropertyAddress" IS NOT NULL
           LIMIT 1
-    ) AS "PropertyAddress"
-FROM "NashvilleDataCleaning".housing AS t1;
+    )
+WHERE "PropertyAddress" IS NULL;
 
-
-
-
---\\----------------------\\----------------------\\----------------------\\----------------------\\----------------------
-
-
--- In PostgreSQL we have to use the real name of the table and columns the update statement.
-UPDATE "NashvilleDataCleaning".housing
-    SET "PropertyAddress" = COALESCE(a."PropertyAddress", b."PropertyAddress")
-    FROM "NashvilleDataCleaning".housing AS a
-    JOIN "NashvilleDataCleaning".housing AS b
-        ON a."ParcelID" = b."ParcelID" AND a."UniqueID" != b."UniqueID" -- The lines must be different!
-    WHERE a."PropertyAddress" IS NULL;
 
 -- So, if we re-run that query again it should return no values because there will be none null values
 SELECT a."ParcelID", COALESCE(a."PropertyAddress", b."PropertyAddress"), b."ParcelID", b."PropertyAddress"
@@ -123,6 +100,7 @@ WHERE a."PropertyAddress" IS NULL;
 -- Let's take a closer look at the PropertyAddress column
 SELECT DISTINCT "PropertyAddress"
 FROM "NashvilleDataCleaning".housing;
+SELECT 
 
 -- In the same field we have the street address and the city, separated by a comma.
 /*
