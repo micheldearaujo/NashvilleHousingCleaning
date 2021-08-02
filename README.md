@@ -33,7 +33,7 @@ This dataset contains information about the Nashville housing market and can be 
 This dataset contains a column "SaleDate" that informs the date that the property were sold. Originally it is the following formating:
 
 <p align="center">
-<img width="200" height="480" src="images/salesdate.png">
+<img width="120" height="184" src="images/sales_date.png">
 
 In PostgreSQl is pretty simple to Standardize this column. We only need to use the Date() function:
 
@@ -43,7 +43,7 @@ SET "SaleDate" = date("SaleDate")
 And the result is:
 
 <p align="center">
-<img width="200" height="480" src="images/salesdate2.png">
+<img width="142" height="203" src="images/sales_date2.png">
 
 </div>
 
