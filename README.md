@@ -73,7 +73,7 @@ WHERE a."PropertyAddress" IS NULL;
 This self join returns the following sample table
 
 <p align="center">
-<img width="480" height="320" src="images/property2.png">
+<img width="380" height="280" src="images/property2.png">
 
 For every row with missing PropertyAddress there is a row with non-missing PropertyAddress. So, let's fill in those rows.
 
@@ -99,7 +99,7 @@ And if we rerun the above query that returns the NULL values it is returned:
 The PropertyAddress column still has a minor issue to be solved: The address a single string in one field. This probably fine when just gathering the data, but if we want to make a deeper analysis on this data it would be better to have it separated in different columns. To achieve this, we can simply use the <i>split_part()</i> function:
 
 <p align="center">
-<img width="480" height="320" src="images/property3.png">
+<img width="380" height="280" src="images/property3.png">
 
 select "PropertyAddress",
         split_part("PropertyAddress", ',', 1) as "PropertyStreetAddress",
@@ -122,7 +122,7 @@ update "NashvilleDataCleaning".housing
 set "City" = split_part("PropertyAddress", ',', 2);
 
 <p align="center">
-<img width="480" height="320" src="images/property4.png">
+<img width="380" height="280" src="images/property4.png">
 
 The same thing occurs to the OwnerAddress column:
 
