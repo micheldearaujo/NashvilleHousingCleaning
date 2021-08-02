@@ -189,6 +189,89 @@ That was quite simple.
 
 #### 5. Removing Duplicates
 
-Now, that parte is a really tricky one.
+Now, that part is a tricky one. <br>
+To see how many rows have duplicates we can use a group by, But first lets create a View without the "UniqueID" column.
+So we can use the SELECT * 
+
+```
+create View "NashvilleDataCleaning"."NoUniqueID" as 
+    select "ParcelID", "LandUse", "PropertyAddress", "SaleDate", "SalePrice", "LegalReference", "SoldAsVacant",
+    "OwnerName", "OwnerAddress", "Acreage", "TaxDistrict", "LandValue", "BuildingValue", "TotalValue", "YearBuilt", 
+    "Bedrooms", "FullBath", "HalfBath", "StreetAddress", "City", "OwnerStreetAddress", "OwnerCityAddress", "OwnerStateAddress"
+    from "NashvilleDataCleaning".housing;
+```
+
+And then the grouping, to count the ocurriencies of each row:
+
+```
+select count("PropertyAddress") as "Duplicates", *
+from "NashvilleDataCleaning"."NoUniqueID"
+group by "ParcelID", "LandUse", "PropertyAddress", "SaleDate", "SalePrice", "LegalReference", "SoldAsVacant",
+    "OwnerName", "OwnerAddress", "Acreage", "TaxDistrict", "LandValue", "BuildingValue", "TotalValue", "YearBuilt", 
+    "Bedrooms", "FullBath", "HalfBath", "StreetAddress", "City", "OwnerStreetAddress", "OwnerCityAddress", "OwnerStateAddress"
+having count("PropertyAddress") > 1;
+```
+So, there are 103 duplicates in the dataset!
+There is a couple of ways of removing duplicated records of a table.
+For example, we can use a row_number() with partition by to delete those rows
+
+```
+create view "NashvilleDataCleaning"."temptable" as 
+select *, 
+    row_number() over (
+    partition by "ParcelID", "LandUse", "PropertyAddress", "SaleDate", "SalePrice", "LegalReference", "SoldAsVacant",
+    "OwnerName", "OwnerAddress", "Acreage", "TaxDistrict", "LandValue", "BuildingValue", "TotalValue", "YearBuilt", 
+    "Bedrooms", "FullBath", "HalfBath", "StreetAddress", "City", "OwnerStreetAddress", "OwnerCityAddress", "OwnerStateAddress"
+    order by "UniqueID") as row_num
+from "NashvilleDataCleaning"."housing";
+```
+If we select everything where row_num < 2 we have a new table without duplicates!
+
+```
+select * 
+from "NashvilleDataCleaning"."temptable"
+where row_num < 2;
+```
+
+Create a new VIEW
+```
+create view "NashvilleDataCleaning"."finaltable" as 
+select * 
+from "NashvilleDataCleaning"."temptable"
+where row_num < 2;
+```
+
+Now we just need to transform this View in a proper TABLE
+```
+create table "NashvilleDataCleaning".nashville as select * from "NashvilleDataCleaning"."finaltable";
+```
+
+</div>
+
+<div>
+
+#### 6. Delete unused column
+
+We just need to make a alter TABLE
+```
+alter table "NashvilleDataCleaning".nashville
+drop column "OwnerAddress", "PropertyAddress", "TaxDistrict", row_num;
+```
+
+And renaming some of the created columns to a giver a better description
+```
+alter table "NashvilleDataCleaning".nashville
+rename column "StreetAddress" to "PropertyStreetAddress";
+
+alter table "NashvilleDataCleaning".nashville
+rename column "City" to "PropertyCityAddress";
+
+select * from "NashvilleDataCleaning".nashville;
+
+```
+
+
+
+
 
 </div>
