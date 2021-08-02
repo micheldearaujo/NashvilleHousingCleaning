@@ -269,9 +269,9 @@ rename column "City" to "PropertyCityAddress";
 select * from "NashvilleDataCleaning".nashville;
 
 ```
+### Conclusion
 
-
-
+(continues)
 
 
 </div>
