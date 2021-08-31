@@ -193,7 +193,7 @@ FROM "NashvilleDataCleaning"."housing";
 ```
 
 <p align="center">
-<img width="400" height="201" src="images/soldasvacant.jpeg">
+<img width="143" height="109" src="images/soldasvacant.jpeg">
 
 
 Let's normalize all those values to only Yes and No:
