@@ -2,17 +2,27 @@
   
 # Nashville Housing Data Cleaning
 
-Hi there! In this project I will go through a data cleaning in the "Nashville Housing" dataset
- 
-<hr>
+Hi there!
+
+In this project will be performed a data cleaning using PostgreSQL. The target data is the famous Nashville Housing data, from Kaggle.
+
 </div>
 
 <div>
 
+## Introduction
 
-### Introduction
+This dataset contains information about the Nashville housing market and can be found in [Kaggle](https://www.kaggle.com/tmthyjames/nashville-housing-data). 
+It contains information about the housing market from the Nashville city, capital of Tennessee State of the United States. In this dataset one can find a housing information such as
 
-This dataset contains information about the Nashville housing market and can be found in [Kaggle](https://www.kaggle.com/tmthyjames/nashville-housing-data). <br>
+1. Type of use: Single family, residential condo, vacant res land, vacant rural land, duplex, among others;
+2. The property address;
+3. Sale date and price;
+4. Owner name;
+5. Building and total value;
+6. Year Built;
+7. Number of bathrooms, full bathrooms and half bathrooms.
+8. Acreage.
 
 #### Let's get right into it! I intend to make some data cleaning, for example
 
@@ -24,7 +34,6 @@ This dataset contains information about the Nashville housing market and can be 
 6. Delete unused column
 
 </div>
-<hr>
 
 <div>
 
@@ -35,7 +44,7 @@ This dataset contains a column "SaleDate" that informs the date that the propert
 <p align="center">
 <img width="120" height="184" src="images/sale_date.png">
 
-In PostgreSQl is pretty simple to Standardize this column. We only need to use the Date() function:
+In PostgreSQL is pretty simple to Standardize this column. We only need to use the Date() function:
 
 ```
 UPDATE "NashvilleDataCleaning".housing
@@ -49,10 +58,7 @@ And the result is:
 
 </div>
 
-
-
-
-</div>
+<div>
 
 #### 2. Fill in the NULL values in the Property Address column
 
@@ -63,7 +69,7 @@ There is a pattern that make it make easier:
 <p align="center">
 <img width="515" height="203" src="images/property1.png">
 
-Whenver the "ParcelID" value is duplicated, so is the PropertyAddress value. This happens throughout the entire dataset. So the strategy to fill in the missing values in the PropertyAddress column is to find a different row that has the same ParcelID and has a valid PropertyAddress.<br>
+Whenever the "ParcelID" value is duplicated, so is the PropertyAddress value. This happens throughout the entire dataset. So the strategy to fill in the missing values in the PropertyAddress column is to find a different row that has the same ParcelID and has a valid PropertyAddress.<br>
 
 We can make use of a <i>self join</i> to find out some rows that matches this criteria:
 ```
